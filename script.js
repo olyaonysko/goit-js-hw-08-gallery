@@ -31,27 +31,28 @@ const createMarkup = images.map((image, index) => {
 });
 
 refs.gallery.append(...createMarkup);
-const listItemsArray = createMarkup;
 
 function onClickHandler(event) {
   event.preventDefault();
-  if (event.target.nodeName === "IMG") {
-    window.addEventListener("keydown", onEscapeHandler);
+  const galleryItemRef = event.target;
+  if (galleryItemRef.nodeName === "IMG") {
+    window.addEventListener("keydown", onKeyPressHandler);
     refs.lightbox.classList.add("is-open");
     refs.lightbox.querySelector(".lightbox__image").src =
-      event.target.dataset.source;
-    refs.lightbox.querySelector(".lightbox__image").alt = event.target.alt;
-    currentImage = event.target.dataset.index;
+      galleryItemRef.dataset.source;
+    refs.lightbox.querySelector(".lightbox__image").alt = galleryItemRef.alt;
+    currentImage = Number(galleryItemRef.dataset.index);
   }
 }
 
 function onCloseHandler() {
-  window.removeEventListener("keydown", onEscapeHandler);
+  window.removeEventListener("keydown", onKeyPressHandler);
   refs.lightbox.classList.remove("is-open");
   refs.lightboxImage.src = "";
+  refs.lightboxImage.alt = "";
 }
 
-function onEscapeHandler(event) {
+function onKeyPressHandler(event) {
   if (event.code === "Escape") onCloseHandler();
   if (event.code === "ArrowLeft") prevImage();
   if (event.code === "ArrowRight") nextImage();
@@ -72,7 +73,7 @@ function prevImage() {
 }
 
 function nextImage() {
-  if (currentImage < listItemsArray.length - 1) {
+  if (currentImage < images.length - 1) {
     currentImage += 1;
     refs.lightboxImage.src = images[currentImage].original;
     refs.lightboxImage.alt = images[currentImage].description;
